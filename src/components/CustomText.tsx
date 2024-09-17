@@ -10,5 +10,4 @@ const styles = StyleSheet.create({
     fontFamily: 'PretendardVariable',
   },
 });
-
 export default CustomText;

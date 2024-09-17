@@ -1,5 +1,3 @@
-// src/page/signup/Signup.tsx
-
 import React, { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import Input from '../../components/input';
@@ -26,7 +24,6 @@ export function Signup() {
     } else {
       setIdError('');
     }
-
     const passwordRegex = /^[a-zA-Z0-9!@#$%^&*()_+]{8,20}$/;
     if (!password || !passwordRegex.test(password)) {
       setPasswordError('비밀번호는 8 ~ 20자의 영문, 숫자, 특수문자만 사용 가능합니다');

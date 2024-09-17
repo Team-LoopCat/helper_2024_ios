@@ -1,5 +1,3 @@
-// components/Input.tsx
-
 import React from 'react';
 import { StyleSheet, TextInput, View, TouchableOpacity, Image, TextInputProps, Text } from 'react-native';
 
@@ -7,7 +5,7 @@ interface InputProps extends TextInputProps {
   isFocused: boolean;
   showPasswordToggle?: boolean;
   onTogglePassword?: () => void;
-  errorMessage?: string; // 오류 메시지 prop 추가
+  errorMessage?: string;
 }
 
 const Input: React.FC<InputProps> = ({
