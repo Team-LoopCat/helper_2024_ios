@@ -1,92 +1,102 @@
+// src/page/signup/Signup.tsx
+
 import React, { useState } from 'react';
-import { StyleSheet, Text, TextInput, View, Image, TouchableOpacity } from 'react-native';
-import { Button } from 'react-native-elements';
+import { StyleSheet, Text, View } from 'react-native';
+import Input from '../../components/input'; // 컴포넌트 파일 경로에 맞게 수정하세요
+import Button from '../../components/button'; // 컴포넌트 파일 경로에 맞게 수정하세요
 
 export function Signup() {
-  const [id, setId] = useState('');
-  const [password, setPassword] = useState('');
-  const [repassword, setRepassword] = useState('');
-  const [error, setError] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-  const [showRepassword, setShowRepassword] = useState(false);
+  const [id, setId] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [repassword, setRepassword] = useState<string>('');
+  const [idError, setIdError] = useState<string>('');
+  const [passwordError, setPasswordError] = useState<string>('');
+  const [repasswordError, setRepasswordError] = useState<string>('');
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [showRepassword, setShowRepassword] = useState<boolean>(false);
+  const [focusedField, setFocusedField] = useState<string>('');
 
-  const handleLogin = () => {
-    if (!id || !password) {
-      setError('아이디나 비밀번호를 확인해주세요');
-      return;
+  const handleSignup = () => {
+    let hasError = false;
+
+    // ID Validation
+    const idRegex = /^[a-zA-Z0-9_]{5,20}$/;
+    if (!id || !idRegex.test(id)) {
+      setIdError('아이디는 5 ~ 20자의 영문, 숫자, _만 사용 가능합니다');
+      hasError = true;
+    } else {
+      setIdError('');
     }
 
-    console.log('회원가입 시도:', { id, password, repassword });
-    setError('');
+    // Password Validation
+    const passwordRegex = /^[a-zA-Z0-9!@#$%^&*()_+]{8,20}$/;
+    if (!password || !passwordRegex.test(password)) {
+      setPasswordError('비밀번호는 8 ~ 20자의 영문, 숫자, 특수문자만 사용 가능합니다');
+      hasError = true;
+    } else {
+      setPasswordError('');
+    }
+
+    // Confirm Password Validation
+    if (password !== repassword) {
+      setRepasswordError('비밀번호가 일치하지 않습니다');
+      hasError = true;
+    } else {
+      setRepasswordError('');
+    }
+
+    if (!hasError) {
+      console.log('회원가입 시도:', { id, password, repassword });
+    }
   };
 
   const isButtonEnabled = id && password && repassword;
 
   return (
     <View style={styles.container}>
-      {/*회원가입*/}
       <Text style={styles.title}>회원가입</Text>
-      {/*아이디 input*/}
-      <View style={styles.passwordContainer}>
-        <TextInput
-          style={styles.input}
-          placeholder="아이디 (5 ~ 20자)"
-          value={id}
-          onChangeText={setId}
-          keyboardType="email-address"
-          autoCapitalize="none"
-        />
-        <View>
-          {error ? <Text style={styles.errorText}>{error}</Text> : null}
-        </View>
-      </View>
-      {/*비밀번호 input*/}
-      <View style={styles.passwordContainer}>
-        <TextInput
-          style={[styles.input, styles.passwordInput]}
-          placeholder="비밀번호 (8 ~ 20자)"
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry={!showPassword}
-        />
-        <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.icon}>
-          <Image
-            source={require('../../asset/unlook.png')}
-            style={styles.iconImage}
-          />
-        </TouchableOpacity>
-        <View>
-          {error ? <Text style={styles.errorText}>{error}</Text> : null}
-        </View>
-      </View>
-      <View style={styles.passwordContainer}>
-        <TextInput
-          style={[styles.input, styles.passwordInput]}
-          placeholder="비밀번호 확인"
-          value={repassword}
-          onChangeText={setRepassword}
-          secureTextEntry={!showRepassword}
-        />
-        <TouchableOpacity onPress={() => setShowRepassword(!showRepassword)} style={styles.icon}>
-          <Image
-            source={require('../../asset/unlook.png')}
-            style={styles.iconImage}
-          />
-        </TouchableOpacity>
-        <View>
-          {error ? <Text style={styles.errorText}>{error}</Text> : null}
-        </View>
-      </View>
-      <View style={styles.buttont}>
-        <Button
-          title="다음"
-          buttonStyle={[
-            styles.button,
-            { backgroundColor: isButtonEnabled ? '#FF9900' : '#BEBEBE' },
-          ]}
-          onPress={handleLogin}
-        />
-      </View>
+      <Input
+        value={id}
+        onChangeText={setId}
+        placeholder="아이디 (5 ~ 20자)"
+        onFocus={() => setFocusedField('id')}
+        onBlur={() => setFocusedField('')}
+        isFocused={focusedField === 'id'}
+        errorMessage={idError}
+      />
+      <Input
+        value={password}
+        onChangeText={setPassword}
+        placeholder="비밀번호 (8 ~ 20자)"
+        secureTextEntry={!showPassword}
+        onFocus={() => setFocusedField('password')}
+        onBlur={() => setFocusedField('')}
+        showPasswordToggle
+        onTogglePassword={() => setShowPassword(!showPassword)}
+        isFocused={focusedField === 'password'}
+        errorMessage={passwordError}
+      />
+      <Input
+        value={repassword}
+        onChangeText={setRepassword}
+        placeholder="비밀번호 확인"
+        secureTextEntry={!showRepassword}
+        onFocus={() => setFocusedField('repassword')}
+        onBlur={() => setFocusedField('')}
+        showPasswordToggle
+        onTogglePassword={() => setShowRepassword(!showRepassword)}
+        isFocused={focusedField === 'repassword'}
+        errorMessage={repasswordError}
+      />
+
+      <Button
+        title="다음"
+        onPress={handleSignup}
+        buttonStyle={[
+          styles.button,
+          { backgroundColor: isButtonEnabled ? '#FF9900' : '#BEBEBE' },
+        ]}
+      />
     </View>
   );
 }
@@ -95,71 +105,23 @@ const styles = StyleSheet.create({
   container: {
     width: '100%',
     height: '100%',
-    justifyContent: 'center',
     alignItems: 'center',
-    gap: 25,
   },
   title: {
-    marginBottom: 30,
+    marginBottom: '20%',
     color: '#000000',
-    marginTop: 100,
+    marginTop: '40%',
     textAlign: 'center',
     fontSize: 24,
-    fontWeight: 'bold',
-  },
-  input: {
-    width: 340,
-    height: 48,
-    borderRadius: 8,
-    borderColor: '#d1d5db',
-    borderWidth: 1,
-    paddingHorizontal: 16,
-    fontWeight: '600',
-  },
-  passwordContainer: {
-    position: 'relative',
-    display: 'flex',
-    justifyContent: 'flex-start',
-  },
-  passwordInput: {
-    paddingRight: 40,
-  },
-  icon: {
-    position: 'absolute',
-    right: 10,
-    top: '50%',
-    transform: [{ translateY: -12 }],
-  },
-  iconImage: {
-    width: 24,
-    height: 24,
-  },
-  errorText: {
-    position: 'absolute',
-    color: '#ef4444',
-    marginTop: 2,
-    marginLeft: 5,
-    fontSize: 12,
-  },
-  textContainer: {
-    color: '#000000',
-    fontSize: 14,
-  },
-  signup: {
-    color: '#FF9900',
-    fontWeight: 'bold',
-    marginLeft: 4,
+    fontWeight: '900',
   },
   button: {
-    marginTop: 300,
+    position: 'absolute',
+    bottom: '10%',
     borderRadius: 8,
-    width: 340,
+    width: '82.5%',
     height: 48,
-    fontWeight: 'heavy',
-  },
-  buttont: {
-    display: 'flex',
-    flexDirection: 'column',
+    justifyContent: 'center',
     alignItems: 'center',
   },
 });
