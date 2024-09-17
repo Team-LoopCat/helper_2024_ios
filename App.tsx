@@ -2,7 +2,7 @@ import React from 'react';
 import {SafeAreaView, StyleSheet} from 'react-native';
 import {Login} from './src/page/login/index';
 import {Signup} from './src/page/signup';
-import CustomText from './src/components/customText';
+import CustomText from './src/components/CustomText';
 
 function App(): React.JSX.Element {
   return (
